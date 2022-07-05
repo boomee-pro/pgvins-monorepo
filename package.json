@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "name": "pgvins",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "client": "yarn workspace web dev",
+    "server": "yarn workspace api dev",
+    "start": "concurrently --kill-others-on-fail \"yarn api\"  \"yarn web\""
+  },
+  "dependencies": {
+    "concurrently": "^7.2.2"
+  }
+}
