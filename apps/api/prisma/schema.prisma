@@ -3,24 +3,45 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id               String  @id @default(cuid())
-  email            String  @unique
-  firstName        String
-  lastName         String
-  password         String
-  previousPassword String?
-}
-
 model Wine {
-  id     String  @id @default(cuid())
-  name   String  @unique
+  id     String @id @default(cuid())
+  name   String @unique
   origin String
   price  Float
-  img    String?
-  flag   String?
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  firstName String
+  lastName  String
+  Account   Account[]
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  expiresAt DateTime
+}
+
+model Provider {
+  name    String    @id
+  Account Account[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  providerAccountId String? @unique
+  password          String?
+  lastPassword      String?
+  userId            String
+  providerName      String
+
+  provider Provider @relation(fields: [providerName], references: [name])
+  user     User     @relation(fields: [userId], references: [id])
+
 }

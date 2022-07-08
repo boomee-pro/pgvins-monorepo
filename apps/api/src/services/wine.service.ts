@@ -1,7 +1,7 @@
 import { PrismaClient, Wine } from "@prisma/client";
+import { z } from "zod";
 
-import { prisma } from "../db/client";
-import { winePostType, winePutType } from "../types/wine";
+import { winePostModel, winePutModel } from "../types/wine";
 
 type WineReturnData = {
   message: string;
@@ -45,7 +45,9 @@ export default class WineService {
       };
     }
   }
-  public async create(wine: winePostType): Promise<WineReturnData> {
+  public async create(
+    wine: z.infer<typeof winePostModel>
+  ): Promise<WineReturnData> {
     try {
       const dbWine = await this.prisma.wine.create({ data: wine });
       return { success: true, data: dbWine, message: "Wine created." };
@@ -57,16 +59,21 @@ export default class WineService {
     }
   }
 
-  public async update(id: string, wine: winePutType): Promise<WineReturnData> {
+  public async update(
+    id: string,
+    wine: z.infer<typeof winePutModel>
+  ): Promise<WineReturnData> {
     try {
-      const oldWine = await this.prisma.wine.findUnique({ where: { id } });
+      const oldWine = await this.prisma.wine.findUnique({
+        where: { id },
+        select: { id: false },
+      });
       if (!oldWine) {
         return {
           success: false,
           message: "Wine doesn't exist.",
         };
       }
-      delete (oldWine as any).id;
       const dbWine = await this.prisma.wine.update({
         where: { id },
         data: Object.assign(oldWine, wine),

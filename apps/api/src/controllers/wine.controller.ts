@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import WineService from "../services/wine.service";
 import Controller, { Methods } from "../types/controller";
-import { winePostModel, winePutModel, winePutType } from "../types/wine";
+import { winePostModel, winePutModel } from "../types/wine";
 import { prisma } from "../db/client";
 
 const wineService = new WineService(prisma);
@@ -113,7 +113,7 @@ export default class WineController extends Controller {
       const { id } = req.params;
       const wine = req.body;
       const parsedWine = winePutModel.parse(wine);
-      const dbRes = await wineService.update(id, parsedWine as winePutType);
+      const dbRes = await wineService.update(id, parsedWine);
       if (dbRes.success) {
         super.sendSuccess(res, dbRes.data!, dbRes.message);
       } else {

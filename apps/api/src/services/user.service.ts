@@ -1,5 +1,6 @@
 import { PrismaClient, User } from "@prisma/client";
-import { userPostType, userPutType } from "../types/user";
+import { z } from "zod";
+import { userPostModel, userPutModel } from "../types/user";
 
 type UserReturnData = {
   message: string;
@@ -68,7 +69,9 @@ export default class UserService {
     }
   }
 
-  public async create(user: userPostType): Promise<UserReturnData> {
+  public async create(
+    user: z.infer<typeof userPostModel>
+  ): Promise<UserReturnData> {
     try {
       const oldUser = await this.prisma.user.findUnique({
         where: { email: user.email },
@@ -79,7 +82,17 @@ export default class UserService {
           message: "User already exists.",
         };
       }
-      const dbUser = await this.prisma.user.create({ data: user });
+      const dbUser = await this.prisma.user.create({
+        data: {
+          ...user,
+        },
+      });
+      if (!dbUser) {
+        return {
+          success: false,
+          message: "User not created.",
+        };
+      }
       return { success: true, data: dbUser, message: "User created." };
     } catch (error) {
       return {
@@ -89,20 +102,23 @@ export default class UserService {
     }
   }
 
-  public async update(id: string, user: userPutType): Promise<UserReturnData> {
+  public async update(
+    id: string,
+    user: z.infer<typeof userPutModel>
+  ): Promise<UserReturnData> {
     try {
-      const oldUser = await this.prisma.user.findUnique({ where: { id } });
-      if (!oldUser) {
+      const dbUser = await this.prisma.user.update({
+        where: { id },
+        data: {
+          ...user,
+        },
+      });
+      if (!dbUser) {
         return {
           success: false,
           message: "User doesn't exist.",
         };
       }
-      delete (oldUser as any).id;
-      const dbUser = await this.prisma.user.update({
-        where: { id },
-        data: Object.assign(oldUser, user),
-      });
       return { success: true, data: dbUser, message: "User updated." };
     } catch (error) {
       return {

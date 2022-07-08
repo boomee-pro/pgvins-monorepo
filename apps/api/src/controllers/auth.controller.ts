@@ -1,16 +1,8 @@
-import argon2 from "argon2";
 import { NextFunction, Request, Response } from "express";
 
 import UserService from "../services/user.service";
 import Controller, { Methods } from "../types/controller";
 import { prisma } from "../db/client";
-import {
-  userPostModel,
-  emailModel,
-  passwordModel,
-  userPutModel,
-  userPutType,
-} from "../types/user";
 
 const userService = new UserService(prisma);
 
@@ -69,129 +61,37 @@ export default class AuthController extends Controller {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
-    try {
-      const { email, password } = req.body;
-      const dbUser = await userService.findOne(email);
-      if (!dbUser.success) {
-        super.sendError(res, dbUser.message);
-      }
-      const user = dbUser.data;
-      const passwordMatch = await argon2.verify(user!.password, password);
-      if (!passwordMatch) {
-        super.sendError(res, "Invalid password");
-      }
-      super.sendSuccess(res, { email }, "Login successful");
-    } catch (error) {
-      console.log(error);
-      super.sendError(res);
-    }
-  }
+  ): Promise<void> {}
 
   async handleLogout(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
-    try {
-      super.sendSuccess(res, {}, "Logout successful");
-    } catch (error) {
-      console.log(error);
-      super.sendError(res);
-    }
-  }
+  ): Promise<void> {}
 
   async handleRegister(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
-    try {
-      const user = req.body;
-      // already validated in the frontend.
-      const parsedUser = userPostModel.parse(user);
-      const hashedPassword = await argon2.hash(parsedUser.password);
-      const dbUser = await userService.create({
-        ...parsedUser,
-        password: hashedPassword,
-      });
-      if (!dbUser.success) {
-        super.sendError(res, dbUser.message);
-        return;
-      }
-      super.sendSuccess(
-        res,
-        { email: parsedUser.email },
-        "Registration successful"
-      );
-    } catch (error) {
-      console.log(error);
-      super.sendError(res);
-    }
-  }
+  ): Promise<void> {}
 
   async handleEmailUpdate(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
-    try {
-      const { id } = req.params;
-      const { email } = req.body;
-      const parsedEmail = emailModel.parse(email);
-      const dbUser = await userService.update(id, { email: parsedEmail });
-      if (!dbUser.success) {
-        super.sendError(res, dbUser.message);
-        return;
-      }
-      super.sendSuccess(res, { email }, "Email update successful");
-    } catch (error) {
-      console.log(error);
-      super.sendError(res);
-    }
-  }
+  ): Promise<void> {}
 
   async handlePasswordUpdate(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
-    try {
-      const { id } = req.params;
-      const { password } = req.body;
-      const parsedPassword = passwordModel.parse(password);
-      const dbUser = await userService.update(id, { password: parsedPassword });
-      if (!dbUser.success) {
-        super.sendError(res, dbUser.message);
-        return;
-      }
-      super.sendSuccess(res, {}, "Password update successful");
-    } catch (error) {
-      console.log(error);
-      super.sendError(res);
-    }
-  }
+  ): Promise<void> {}
 
   async handleUpdate(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
-    try {
-      const { id } = req.params;
-      const user = req.body;
-      const parsedUser = userPutModel.parse(user);
-      const dbUser = await userService.update(id, parsedUser as userPutType);
-      if (!dbUser.success) {
-        super.sendError(res, dbUser.message);
-        return;
-      }
-      super.sendSuccess(res, {}, "Email update successful");
-    } catch (error) {
-      console.log(error);
-      super.sendError(res);
-    }
-  }
+  ): Promise<void> {}
 
   async handleDelete(
     req: Request,
