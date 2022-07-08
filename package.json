@@ -5,9 +5,11 @@
     "apps/*"
   ],
   "scripts": {
-    "client": "yarn workspace web dev",
-    "server": "yarn workspace api dev",
-    "start": "concurrently --kill-others-on-fail \"yarn api\"  \"yarn web\""
+    "web": "yarn workspace web dev",
+    "api": "yarn workspace api dev",
+    "api build": "yarn workspace api build",
+    "api start": "yarn workspace api start",
+    "dev": "concurrently --kill-others-on-fail \"yarn api\"  \"yarn web\""
   },
   "dependencies": {
     "concurrently": "^7.2.2"
