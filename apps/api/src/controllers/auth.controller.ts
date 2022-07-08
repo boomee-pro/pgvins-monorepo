@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
+import passport from "passport";
+
 import UserService from "../services/user.service";
 import Controller, { Methods } from "../types/controller";
 import { prisma } from "../db/client";
@@ -28,28 +30,27 @@ export default class AuthController extends Controller {
       localMiddleware: [],
     },
     {
-      path: "/password/:id",
-      method: Methods.PUT,
-      handler: this.handlePasswordUpdate,
+      path: "/user",
+      method: Methods.GET,
+      handler: this.handleVerifyUser,
       localMiddleware: [],
     },
+    // * GOOGLE OAUTH ROUTE
     {
-      path: "/email/:id",
-      method: Methods.PUT,
-      handler: this.handleEmailUpdate,
-      localMiddleware: [],
+      path: "/google",
+      method: Methods.GET,
+      handler: () => {},
+      localMiddleware: [
+        passport.authenticate("google", { scope: ["profile", "email"] }),
+      ],
     },
     {
-      path: "/user/:id",
-      method: Methods.PUT,
-      handler: this.handleEmailUpdate,
-      localMiddleware: [],
-    },
-    {
-      path: "/user/:id",
-      method: Methods.DELETE,
-      handler: this.handleDelete,
-      localMiddleware: [],
+      path: "/google/callback",
+      method: Methods.GET,
+      handler: this.handleGoogleCallback,
+      localMiddleware: [
+        passport.authenticate("google", { failureRedirect: "/login" }),
+      ],
     },
   ];
 
@@ -57,58 +58,57 @@ export default class AuthController extends Controller {
     super();
   }
 
+  async handleVerifyUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    super.sendSuccess(res, req.user ?? "");
+  }
+
   async handleLogin(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {}
+  ): Promise<void> {
+    passport.authenticate("login", (_, user, info) => {
+      if (info) return super.sendError(res, info.message);
+
+      return req.logIn(user, () => {
+        return super.sendSuccess(res, user);
+      });
+    })(req, res, next);
+  }
 
   async handleLogout(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {}
+  ): Promise<void> {
+    if (req.user)
+      req.logOut(() => {
+        super.sendSuccess(res, {});
+      });
+  }
 
   async handleRegister(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {}
+  ): Promise<void> {
+    passport.authenticate("register", (err, user, info) => {
+      if (info) return super.sendError(res, info.message);
+      return req.logIn(user, async () => {
+        return super.sendSuccess(res, user);
+      });
+    })(req, res, next);
+  }
 
-  async handleEmailUpdate(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {}
-
-  async handlePasswordUpdate(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {}
-
-  async handleUpdate(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {}
-
-  async handleDelete(
+  async handleGoogleCallback(
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    try {
-      const { id } = req.params;
-      const dbUser = await userService.delete(id);
-      if (!dbUser.success) {
-        super.sendError(res, dbUser.message);
-        return;
-      }
-      super.sendSuccess(res, {}, "User deleted");
-    } catch (error) {
-      console.log(error);
-      super.sendError(res);
-    }
+    return res.redirect("http://localhost:3000");
   }
 }
