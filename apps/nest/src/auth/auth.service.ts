@@ -59,4 +59,28 @@ export class AuthService {
     }
     return user;
   }
+
+  async googleLogin(req) {
+    if (!req.user) {
+      throw new UnauthorizedException('No google user.');
+    }
+    let user = await this.usersService.findOne({ email: req.user.email });
+    if (!user) {
+      user = await this.usersService.create({
+        email: req.user.email,
+        lastName: req.user.lastName,
+        firstName: req.user.firstName,
+      });
+    }
+    const account = await this.accountsService.findOne({
+      userId: user.id,
+    });
+    if (!account) {
+      await this.accountsService.create({
+        user: { connect: { id: user.id } },
+        provider: { connect: { name: 'google' } },
+      });
+    }
+    return user;
+  }
 }

@@ -9,6 +9,7 @@ import { UsersService } from 'src/users/users.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { SessionSerializer } from './session.serializer';
+import { GoogleStrategy } from './strategies/google.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
@@ -24,6 +25,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     AccountsService,
     PrismaService,
     LocalStrategy,
+    GoogleStrategy,
     SessionSerializer,
   ],
 })
