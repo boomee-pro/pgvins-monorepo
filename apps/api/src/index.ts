@@ -5,6 +5,7 @@ import passport from "passport";
 
 import AuthController from "./controllers/auth.controller";
 import WineController from "./controllers/wine.controller";
+import { GithubOAuthStrategy } from "./strategies/github.strategy";
 import { GoogleOAuthStrategy } from "./strategies/google.strategy";
 import {
   LocalLoginStrategy,
@@ -44,6 +45,7 @@ const globalStrategies: Array<Strategy> = [
   new LocalLoginStrategy(),
   new LocalRegisterStrategy(),
   new GoogleOAuthStrategy(),
+  new GithubOAuthStrategy(),
 ];
 
 Promise.resolve().then(() => {

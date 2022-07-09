@@ -1,41 +1,40 @@
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Strategy as GitHubStrategy } from "passport-github2";
 import argon2 from "argon2";
 
 import Strategy from "../types/strategy";
 import { prisma } from "../db/client";
-import { any } from "zod";
 
-export class GoogleOAuthStrategy extends Strategy {
+export class GithubOAuthStrategy extends Strategy {
   constructor() {
     super(
-      "google",
-      new GoogleStrategy(
+      "github",
+      new GitHubStrategy(
         {
-          clientID: process.env.GOOGLE_ID!,
-          clientSecret: process.env.GOOGLE_SECRET!,
-          callbackURL: "/auth/google/callback",
-          scope: ["profile", "email"],
+          clientID: process.env.GITHUB_ID!,
+          clientSecret: process.env.GITHUB_SECRET!,
+          callbackURL: "/auth/github/callback",
+          scope: ["user"],
         },
-        async (_, __, profile: any, done) => {
+        async (_: any, __: any, profile: any, done: any) => {
           const email = profile.emails[0].value;
           let user = await prisma.user.findUnique({ where: { email } });
           if (!user) {
             user = await prisma.user.create({
               data: {
                 email,
-                firstName: profile.name.givenName,
-                lastName: profile.name.familyName ?? "",
+                firstName: profile.name.displayName.split(" ")[0],
+                lastName: profile.name.displayName.split(" ")[1],
               },
             });
           }
           const account = await prisma.account.findFirst({
-            where: { providerName: "google", userId: user.id },
+            where: { providerName: "github", userId: user.id },
           });
           if (!account) {
             await prisma.account.create({
               data: {
                 userId: user.id,
-                providerName: "google",
+                providerName: "github",
                 providerAccountId: profile.id,
               },
             });

@@ -40,16 +40,29 @@ export default class AuthController extends Controller {
       path: "/google",
       method: Methods.GET,
       handler: () => {},
-      localMiddleware: [
-        passport.authenticate("google", { scope: ["profile", "email"] }),
-      ],
+      localMiddleware: [passport.authenticate("google")],
     },
     {
       path: "/google/callback",
       method: Methods.GET,
-      handler: this.handleGoogleCallback,
+      handler: this.handleOAuthCallback,
       localMiddleware: [
         passport.authenticate("google", { failureRedirect: "/login" }),
+      ],
+    },
+    // * GITHUB OAUTH ROUTE
+    {
+      path: "/github",
+      method: Methods.GET,
+      handler: () => {},
+      localMiddleware: [passport.authenticate("github")],
+    },
+    {
+      path: "/github/callback",
+      method: Methods.GET,
+      handler: this.handleOAuthCallback,
+      localMiddleware: [
+        passport.authenticate("github", { failureRedirect: "/login" }),
       ],
     },
   ];
@@ -104,7 +117,7 @@ export default class AuthController extends Controller {
     })(req, res, next);
   }
 
-  async handleGoogleCallback(
+  async handleOAuthCallback(
     req: Request,
     res: Response,
     next: NextFunction

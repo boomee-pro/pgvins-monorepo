@@ -41,7 +41,7 @@ model Account {
   userId            String
   providerName      String
 
-  provider Provider @relation(fields: [providerName], references: [name])
-  user     User     @relation(fields: [userId], references: [id])
+  provider Provider @relation(fields: [providerName], references: [name], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 }
