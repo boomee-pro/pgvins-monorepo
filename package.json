@@ -8,6 +8,7 @@
     "web": "yarn workspace web dev",
     "api": "yarn workspace api dev",
     "nest": "yarn workspace nest-api start:dev",
+    "auth": "yarn workspace react-auth start",
     "api build": "yarn workspace api build",
     "api start": "yarn workspace api start",
     "dev": "concurrently --kill-others-on-fail \"yarn api\"  \"yarn web\"",
