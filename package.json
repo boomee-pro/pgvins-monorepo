@@ -7,9 +7,11 @@
   "scripts": {
     "web": "yarn workspace web dev",
     "api": "yarn workspace api dev",
+    "nest": "yarn workspace nest-api start:dev",
     "api build": "yarn workspace api build",
     "api start": "yarn workspace api start",
-    "dev": "concurrently --kill-others-on-fail \"yarn api\"  \"yarn web\""
+    "dev": "concurrently --kill-others-on-fail \"yarn api\"  \"yarn web\"",
+    "dev-2": "concurrently --kill-others-on-fail \"yarn nest\"  \"yarn web\""
   },
   "dependencies": {
     "concurrently": "^7.2.2"
