@@ -1,5 +1,5 @@
-import cors from "cors";
 import express, { RequestHandler } from "express";
+import cors from "cors";
 import session from "express-session";
 import passport from "passport";
 import RedisStore from "connect-redis";
@@ -9,15 +9,16 @@ import AuthController from "./controllers/auth.controller";
 import WineController from "./controllers/wine.controller";
 import { GithubOAuthStrategy } from "./strategies/github.strategy";
 import { GoogleOAuthStrategy } from "./strategies/google.strategy";
+import { FacebookOAuthStrategy } from "./strategies/facebook.strategy";
 import {
   LocalLoginStrategy,
   LocalRegisterStrategy,
 } from "./strategies/local.strategy";
+
 import Controller from "./types/controller";
 import Server from "./types/server";
 import Strategy from "./types/strategy";
 import { config } from "dotenv";
-import { FacebookOAuthStrategy } from "./strategies/facebook.strategy";
 config();
 
 const app = express();

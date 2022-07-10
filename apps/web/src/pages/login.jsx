@@ -112,8 +112,8 @@ const Login = () => {
         }}
       >
         <img
-          src={"https://bit.ly/3IyCh52"}
-          alt="Google"
+          src={"https://cdn-icons-png.flaticon.com/512/59/59439.png"}
+          alt="Facebook"
           style={{ maxWidth: "30px" }}
         />
         Login avec Facebook
