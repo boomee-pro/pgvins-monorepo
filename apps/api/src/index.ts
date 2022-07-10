@@ -14,6 +14,9 @@ import {
 import Controller from "./types/controller";
 import Server from "./types/server";
 import Strategy from "./types/strategy";
+import { config } from "dotenv";
+import { FacebookOAuthStrategy } from "./strategies/facebook.strategy";
+config();
 
 const app = express();
 const port = parseInt(process.env.EXPRESS_PORT!) || 8080;
@@ -46,6 +49,7 @@ const globalStrategies: Array<Strategy> = [
   new LocalRegisterStrategy(),
   new GoogleOAuthStrategy(),
   new GithubOAuthStrategy(),
+  new FacebookOAuthStrategy(),
 ];
 
 Promise.resolve().then(() => {

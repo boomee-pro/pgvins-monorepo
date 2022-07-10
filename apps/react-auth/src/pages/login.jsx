@@ -13,12 +13,8 @@ const Login = () => {
     password: "",
   });
 
-  const google = () => {
-    window.open("http://localhost:8080/auth/google", "_self");
-  };
-
-  const github = () => {
-    window.open("http://localhost:8080/auth/github", "_self");
+  const oauth = (type) => {
+    window.open(`http://localhost:8080/auth/${type}`, "_self");
   };
 
   const handleChange = (e) => {
@@ -69,7 +65,7 @@ const Login = () => {
         <span>OU</span>
       </div>
       <button
-        onClick={google}
+        onClick={() => oauth("google")}
         className="submit-btn"
         style={{
           display: "flex",
@@ -87,7 +83,7 @@ const Login = () => {
         Login avec Google
       </button>
       <button
-        onClick={github}
+        onClick={() => oauth("github")}
         className="submit-btn"
         style={{
           display: "flex",
@@ -103,6 +99,24 @@ const Login = () => {
           style={{ maxWidth: "30px" }}
         />
         Login avec Github
+      </button>
+      <button
+        onClick={() => oauth("facebook")}
+        className="submit-btn"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "10px",
+          marginTop: "10px",
+        }}
+      >
+        <img
+          src={"https://bit.ly/3IyCh52"}
+          alt="Google"
+          style={{ maxWidth: "30px" }}
+        />
+        Login avec Facebook
       </button>
       <p>
         Vous n'avez pas de compte ? <Link to="/register">S'inscrire</Link>
