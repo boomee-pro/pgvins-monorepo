@@ -15,6 +15,7 @@ import { AuthUser } from 'src/users/users.decorator';
 import { AuthService } from './auth.service';
 import { SignUp } from './dto/sign-up.dto';
 import { LocalAuthGuard } from './guards/local.guard';
+import { ApiResponse } from 'src/models/api.model';
 
 @Controller('auth')
 export class AuthController {
@@ -22,23 +23,30 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  register(@Body() signUp: SignUp): Promise<User> {
-    return this.authService.register(signUp);
+  async register(@Body() signUp: SignUp): Promise<ApiResponse> {
+    const user = await this.authService.register(signUp);
+    return {
+      message: 'success',
+      data: user,
+    };
   }
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async login(@AuthUser() user: User): Promise<User> {
-    return user;
+  async login(@AuthUser() user: User): Promise<ApiResponse> {
+    return {
+      message: 'success',
+      data: user,
+    };
   }
 
-  @Get()
+  @Get('google')
   @UseGuards(AuthGuard('google'))
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   async googleAuth(@Req() req): Promise<void> {}
 
-  @Get('redirect')
+  @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req) {
     return await this.authService.googleLogin(req);

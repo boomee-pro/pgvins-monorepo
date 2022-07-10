@@ -26,8 +26,9 @@ model User {
 }
 
 model Session {
-  id        String   @id @default(cuid())
+  id        String   @id
   sid       String   @unique
+  data      String?  @db.Text
   expiresAt DateTime
 }
 
@@ -37,16 +38,15 @@ model Provider {
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  providerAccountId String? @unique
+  id                String   @id @default(cuid())
+  providerAccountId String?  @unique
   password          String?
   lastPassword      String?
   userId            String
   providerName      String
+  provider          Provider @relation(fields: [providerName], references: [name], onDelete: Cascade)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  provider Provider @relation(fields: [providerName], references: [name], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index(userId)
-  @@index(providerName)
+  @@index([userId])
+  @@index([providerName])
 }

@@ -1,8 +1,9 @@
-version: '3.8'
+version: '3'
 services:
   redis:
     image: redis:latest
-    command: [ "redis-server", "--bind", "redis", "--port", "6379" ]
+    ports:
+      - '6379:6379'
   rcli:
     image: redis:latest
     links:
