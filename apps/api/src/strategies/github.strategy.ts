@@ -1,5 +1,4 @@
 import { Strategy as GitHubStrategy } from "passport-github2";
-import argon2 from "argon2";
 
 import Strategy from "../types/strategy";
 import { prisma } from "../db/client";
@@ -17,13 +16,14 @@ export class GithubOAuthStrategy extends Strategy {
         },
         async (_: any, __: any, profile: any, done: any) => {
           const email = profile.emails[0].value;
+          const [firstName, lastName] = profile.displayName.split(" ");
           let user = await prisma.user.findUnique({ where: { email } });
           if (!user) {
             user = await prisma.user.create({
               data: {
                 email,
-                firstName: profile.name.displayName.split(" ")[0],
-                lastName: profile.name.displayName.split(" ")[1],
+                firstName,
+                lastName,
               },
             });
           }

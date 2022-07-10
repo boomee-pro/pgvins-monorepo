@@ -65,6 +65,23 @@ export default class AuthController extends Controller {
         passport.authenticate("github", { failureRedirect: "/login" }),
       ],
     },
+    // * FACEBOOK OAUTH ROUTE
+    {
+      path: "/facebook",
+      method: Methods.GET,
+      handler: () => {},
+      localMiddleware: [
+        passport.authenticate("facebook", { scope: ["email"] }),
+      ],
+    },
+    {
+      path: "/facebook/callback",
+      method: Methods.GET,
+      handler: this.handleOAuthCallback,
+      localMiddleware: [
+        passport.authenticate("facebook", { failureRedirect: "/login" }),
+      ],
+    },
   ];
 
   constructor() {
