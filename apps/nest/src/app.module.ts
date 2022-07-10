@@ -10,6 +10,8 @@ import {
   NestModule,
 } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { config } from 'dotenv';
+config();
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -53,12 +55,12 @@ export class AppModule implements NestModule {
             logErrors: true,
           }),
           saveUninitialized: false,
-          secret: 'sup3rs3cr3t',
+          secret: process.env.SECRET || 'supersecret',
           resave: false,
           cookie: {
             sameSite: true,
             httpOnly: false,
-            maxAge: 60000,
+            maxAge: 7 * 24 * 60 * 60 * 1000, // ms
           },
         }),
       )
