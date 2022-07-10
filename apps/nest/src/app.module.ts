@@ -1,14 +1,4 @@
-import * as RedisStore from 'connect-redis';
-import * as session from 'express-session';
-import { createClient } from 'redis';
-import {
-  CacheInterceptor,
-  CacheModule,
-  Inject,
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-} from '@nestjs/common';
+import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { config } from 'dotenv';
 config();
@@ -18,7 +8,6 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AccountsModule } from './accounts/accounts.module';
-import { RedisModule, REDIS } from './redis/redis.module';
 import { WinesModule } from './wines/wines.module';
 
 @Module({
@@ -26,7 +15,6 @@ import { WinesModule } from './wines/wines.module';
     UsersModule,
     AuthModule,
     AccountsModule,
-    RedisModule,
     CacheModule.register({
       ttl: 30, // seconds
       max: 10, // maximum number of items in cache
@@ -42,28 +30,4 @@ import { WinesModule } from './wines/wines.module';
     },
   ],
 })
-export class AppModule implements NestModule {
-  constructor(
-    @Inject(REDIS) private readonly redis: ReturnType<typeof createClient>,
-  ) {}
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(
-        session({
-          store: new (RedisStore(session))({
-            client: this.redis,
-            logErrors: true,
-          }),
-          saveUninitialized: false,
-          secret: process.env.SECRET || 'supersecret',
-          resave: false,
-          cookie: {
-            sameSite: true,
-            httpOnly: false,
-            maxAge: 7 * 24 * 60 * 60 * 1000, // ms
-          },
-        }),
-      )
-      .forRoutes('*');
-  }
-}
+export class AppModule {}
