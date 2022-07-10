@@ -4,8 +4,28 @@ services:
     image: redis:latest
     ports:
       - '6379:6379'
+    volumes:
+      - redis:/data
+
   rcli:
     image: redis:latest
     links:
       - redis
     command: redis-cli -h redis
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'pgvins'
+      MYSQL_USER: 'pg'
+      MYSQL_PASSWORD: 'superpassword'
+      MYSQL_ROOT_PASSWORD: 'superpassword'
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql:/var/lib/mysql
+
+volumes:
+  mysql:
+  redis:

@@ -16,6 +16,7 @@ import { AuthService } from './auth.service';
 import { SignUp } from './dto/sign-up.dto';
 import { LocalAuthGuard } from './guards/local.guard';
 import { ApiResponse } from 'src/models/api.model';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -39,6 +40,16 @@ export class AuthController {
       message: 'success',
       data: user,
     };
+  }
+
+  @Get('logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(@Req() req: Request): Promise<void> {
+    if (req.user) {
+      req.logOut(() => {
+        return;
+      });
+    }
   }
 
   @Get('google')
