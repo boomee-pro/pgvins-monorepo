@@ -7,13 +7,13 @@ import { PrismaService } from 'src/prisma.service';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findOne(
+  findOne(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
     return this.prisma.user.findUnique({ where: userWhereUniqueInput });
   }
 
-  async find(params: {
+  find(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.UserWhereUniqueInput;
@@ -30,13 +30,13 @@ export class UsersService {
     });
   }
 
-  async create(data: Prisma.UserCreateInput): Promise<User> {
+  create(data: Prisma.UserCreateInput): Promise<User> {
     return this.prisma.user.create({
       data,
     });
   }
 
-  async update(params: {
+  update(params: {
     where: Prisma.UserWhereUniqueInput;
     data: Prisma.UserUpdateInput;
   }): Promise<User> {
@@ -47,7 +47,7 @@ export class UsersService {
     });
   }
 
-  async delete(where: Prisma.UserWhereUniqueInput): Promise<User> {
+  delete(where: Prisma.UserWhereUniqueInput): Promise<User> {
     return this.prisma.user.delete({
       where,
     });
