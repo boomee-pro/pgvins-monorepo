@@ -2,6 +2,8 @@ import cors from "cors";
 import express, { RequestHandler } from "express";
 import session from "express-session";
 import passport from "passport";
+import RedisStore from "connect-redis";
+import Redis from "ioredis";
 
 import AuthController from "./controllers/auth.controller";
 import WineController from "./controllers/wine.controller";
@@ -21,6 +23,7 @@ config();
 const app = express();
 const port = parseInt(process.env.EXPRESS_PORT!) || 8080;
 const server = new Server(app, port, passport);
+const redis = new Redis();
 
 const controllers: Array<Controller> = [
   new AuthController(),
@@ -32,11 +35,14 @@ const globalMiddleware: Array<RequestHandler> = [
   express.urlencoded({ extended: false }),
   cors({ credentials: true, origin: "http://localhost:3000" }),
   session({
-    secret: "keyboard cat",
+    store: new (RedisStore(session))({
+      client: redis,
+    }),
+    secret: process.env.SECRET || "supersecret",
     resave: true,
     saveUninitialized: true,
     cookie: {
-      maxAge: 360000,
+      maxAge: 7 * 24 * 3600000, // 1 week
       sameSite: "strict",
     },
   }),

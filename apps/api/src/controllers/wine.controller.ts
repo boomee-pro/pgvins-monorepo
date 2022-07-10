@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import cache from "express-redis-cache";
 
 import WineService from "../services/wine.service";
 import Controller, { Methods } from "../types/controller";
@@ -14,13 +15,13 @@ export default class WineController extends Controller {
       path: "/wines",
       method: Methods.GET,
       handler: this.handleGetMany,
-      localMiddleware: [],
+      localMiddleware: [cache().route()],
     },
     {
       path: "/wine/:id",
       method: Methods.GET,
       handler: this.handleGet,
-      localMiddleware: [],
+      localMiddleware: [cache().route()],
     },
     {
       path: "/wine",
