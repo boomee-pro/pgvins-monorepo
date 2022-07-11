@@ -1,5 +1,18 @@
 import Head from "next/head";
-import { useForm, SubmitHandler } from "react-hook-form";
+import Image from "next/image";
+import Link from "next/link";
+import classNames from "classnames";
+import {
+  useForm,
+  SubmitHandler,
+  ValidationRule,
+  Validate,
+} from "react-hook-form";
+import { Row, Col } from "react-grid-system";
+import { BiEnvelope, BiLockAlt, BiUser } from "react-icons/bi";
+
+import styles from "@styles/auth.module.scss";
+import { AuthLayout, FieldProps } from "@components/AuthLayout";
 
 type RegisterInput = {
   email: string;
@@ -9,13 +22,69 @@ type RegisterInput = {
   lastName: string;
 };
 
+type FieldType = FieldProps & {
+  name: keyof RegisterInput;
+  size?: number;
+  passwordLength?: ValidationRule<number>;
+  passwordVerify?: Validate<string>;
+};
+
 const Register = () => {
   const {
-    register,
+    register: linkInput,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<RegisterInput>();
+
+  const fields: Array<FieldType> = [
+    {
+      name: "lastName",
+      type: "text",
+      icon: <BiUser size={24} />,
+      placeholder: "Nom",
+      requiredMessage: "Le nom est obligatoire",
+      size: 6,
+    },
+    {
+      name: "firstName",
+      type: "text",
+      icon: <BiUser size={24} />,
+      placeholder: "Prénom",
+      requiredMessage: "Le prénom est obligatoire",
+      size: 6,
+    },
+    {
+      name: "email",
+      type: "text",
+      icon: <BiEnvelope size={24} />,
+      placeholder: "Adresse e-mail",
+      requiredMessage: "L'adresse e-mail est obligatoire",
+    },
+    {
+      name: "password",
+      type: "password",
+      icon: <BiLockAlt size={24} />,
+      placeholder: "Mot de passe",
+      requiredMessage: "Le mot de passe est obligatoire",
+      passwordLength: {
+        value: 8,
+        message: "Le mot de passe doit contenir 8 caractères au minimum.",
+      },
+    },
+    {
+      name: "verifyPassword",
+      type: "password",
+      icon: <BiLockAlt size={24} />,
+      placeholder: "Confirmation mot de passe",
+      requiredMessage: "La confirmation est obligatoire",
+      passwordVerify: (value) => {
+        if (value !== watch("password")) {
+          return "Les mots de passe ne correspondent pas.";
+        }
+      },
+    },
+  ];
 
   const onSubmit: SubmitHandler<RegisterInput> = (data) => {
     console.log(data);
@@ -24,72 +93,51 @@ const Register = () => {
   return (
     <div>
       <Head>
-        <title>Connexion</title>
-        <meta name="description" content="Page de connexion" />
+        <title>Inscription</title>
+        <meta name="description" content="Page d'inscription" />
       </Head>
-      <ul>
-        {errors.email && <li>{errors.email.message}</li>}
-        {errors.firstName && <li>{errors.firstName.message}</li>}
-        {errors.lastName && <li>{errors.lastName.message}</li>}
-        {errors.password && <li>{errors.password.message}</li>}
-        {errors.verifyPassword && <li>{errors.verifyPassword.message}</li>}
-      </ul>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          type="email"
-          style={{ display: "block" }}
-          placeholder="Email"
-          {...register("email", { required: "Email requise" })}
-        />
+      <AuthLayout>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <h2>Inscription</h2>
 
-        <input
-          type="text"
-          placeholder="Prénom"
-          style={{ display: "block" }}
-          {...register("firstName", {
-            required: "Prénom requis.",
-          })}
-        />
+          <Row gutterWidth={12} justify="between">
+            {fields.map((field) => (
+              <Col key={field.name} xs={12} md={field.size ?? 12}>
+                <div
+                  key={field.name}
+                  className={classNames(
+                    styles.input_group,
+                    errors[field.name] && styles.error
+                  )}
+                >
+                  {field.icon}
+                  <input
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    {...linkInput(field.name, {
+                      required: field.requiredMessage,
+                      ...(field.passwordLength && {
+                        minLength: field.passwordLength,
+                      }),
+                      ...(field.passwordVerify && {
+                        validate: field.passwordVerify,
+                      }),
+                    })}
+                  />
+                  <small>{errors[field.name]?.message}</small>
+                </div>
+              </Col>
+            ))}
+          </Row>
 
-        <input
-          type="text"
-          placeholder="Nom"
-          style={{ display: "block" }}
-          {...register("lastName", {
-            required: "Nom requis.",
-          })}
-        />
+          <button type="submit">S&apos;inscrire</button>
 
-        <input
-          type="password"
-          style={{ display: "block" }}
-          placeholder="Mot de passe"
-          {...register("password", {
-            required: "Mot de passe requis.",
-            minLength: {
-              value: 8,
-              message: "Le mot de passe doit contenir 8 caractères au minimum.",
-            },
-          })}
-        />
-
-        <input
-          type="password"
-          style={{ display: "block" }}
-          placeholder="Vérifier le mot de passe."
-          {...register("verifyPassword", {
-            required: "Vérifiez votre mot de passe.",
-            validate: (value) => {
-              if (value !== watch("password")) {
-                return "Les mots de passe ne correspondent pas.";
-              }
-            },
-          })}
-        />
-
-        <input type="submit" />
-      </form>
+          <p>
+            Vous avez déjà un compte ? <Link href="login">Se connecter</Link>
+          </p>
+        </form>
+      </AuthLayout>
     </div>
   );
 };

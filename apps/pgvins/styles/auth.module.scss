@@ -30,40 +30,40 @@ $grey: hsl(0, 0%, 47%);
       width: 55%;
       text-align: center;
       color: $grey;
-    }
 
-    .input_group {
-      position: relative;
-      margin-bottom: 25px;
+      .input_group {
+        position: relative;
+        margin-bottom: 25px;
 
-      input {
-        border-radius: 18px;
-        line-height: 45px;
-        width: 100%;
-        color: $grey;
-        border: 1px solid hsl(0, 0%, 60%);
-        outline: none;
-        font-size: 16px;
-        padding-left: 15%;
-        transition: border 0.3s, width 0.3s 0.1s;
-      }
+        input {
+          border-radius: 18px;
+          line-height: 45px;
+          width: 100%;
+          color: $grey;
+          border: 1px solid hsl(0, 0%, 60%);
+          outline: none;
+          font-size: 16px;
+          padding-left: 20%;
+          transition: border 0.3s, width 0.3s 0.1s;
+        }
 
-      input:focus {
-        border: 1px solid black;
-      }
+        input:focus {
+          border: 1px solid black;
+        }
 
-      small {
-        display: block;
-        font-size: 12px;
-        text-align: left;
-        padding-left: 30px;
-        color: $red_light;
-      }
+        small {
+          display: block;
+          font-size: 12px;
+          text-align: left;
+          padding-left: 30px;
+          color: $red_light;
+        }
 
-      svg {
-        position: absolute;
-        top: 11px;
-        left: 5%;
+        svg {
+          position: absolute;
+          top: 11px;
+          left: 5%;
+        }
       }
     }
     .error {
@@ -96,6 +96,10 @@ $grey: hsl(0, 0%, 47%);
       color: $gold;
     }
   }
+}
+
+.split {
+  margin-bottom: 0 !important;
 }
 
 @media screen and (max-width: 700px) {

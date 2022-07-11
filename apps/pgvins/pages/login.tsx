@@ -3,16 +3,17 @@ import Image from "next/image";
 import Link from "next/link";
 import classNames from "classnames";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Row, Col, Hidden } from "react-grid-system";
 import { BiEnvelope, BiLockAlt } from "react-icons/bi";
 
-import bannerImage from "@/images/auth/banner.png";
-import styles from "@/styles/auth.module.scss";
+import styles from "@styles/auth.module.scss";
+import { AuthLayout, FieldProps } from "@components/AuthLayout";
 
-type LoginInput = {
+export type LoginInput = {
   email: string;
   password: string;
 };
+
+export type FieldTypes = FieldProps & { name: keyof LoginInput };
 
 const Login = () => {
   const {
@@ -20,6 +21,23 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginInput>();
+
+  const fields: Array<FieldTypes> = [
+    {
+      name: "email",
+      type: "text",
+      icon: <BiEnvelope size={24} />,
+      placeholder: "Adresse e-mail",
+      requiredMessage: "L'adresse e-mail est obligatoire",
+    },
+    {
+      name: "password",
+      type: "password",
+      icon: <BiLockAlt size={24} />,
+      placeholder: "Mot de passe",
+      requiredMessage: "Le mot de passe est obligatoire",
+    },
+  ];
 
   const onSubmit: SubmitHandler<LoginInput> = (data) => {
     console.log(data);
@@ -32,57 +50,38 @@ const Login = () => {
         <meta name="description" content="Page de connexion" />
       </Head>
 
-      <Row className={styles.container}>
-        <Hidden xs sm>
-          <Col md={6} className={styles.banner}>
-            <Image src={bannerImage} alt="" layout="fill" objectFit="cover" />
-          </Col>
-        </Hidden>
-
-        <Col md={6} className={styles.form_container}>
+      <AuthLayout>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <h2>Connexion</h2>
-          <form onSubmit={handleSubmit(onSubmit)}>
+
+          {fields.map((field) => (
             <div
+              key={field.name}
               className={classNames(
                 styles.input_group,
-                errors.email && styles.error
+                errors[field.name] && styles.error
               )}
             >
-              <BiEnvelope size={24} />
+              {field.icon}
               <input
-                type="text"
-                placeholder="Adresse e-mail"
-                {...linkInput("email", { required: "Email requise" })}
+                type={field.type}
+                placeholder={field.placeholder}
+                {...linkInput(field.name, { required: field.requiredMessage })}
               />
-              <small>{errors.email && errors.email.message}</small>
+              <small>{errors[field.name]?.message}</small>
             </div>
+          ))}
 
-            <div
-              className={classNames(
-                styles.input_group,
-                errors.password && styles.error
-              )}
-            >
-              <BiLockAlt size={24} />
-              <input
-                type="password"
-                placeholder="Mot de passe"
-                {...linkInput("password", { required: "Mot de passe requis." })}
-              />
-              <small>{errors.password && errors.password.message}</small>
-            </div>
+          <Link href="forgot-password">Mot de passe oublié ?</Link>
 
-            <Link href="forgot-password">Mot de passe oublié ?</Link>
+          <button type="submit">Se connecter</button>
 
-            <button type="submit">Se connecter</button>
-
-            <p>
-              Vous n&apos;avez pas encore de compte ?{" "}
-              <Link href="register">S&apos;inscrire</Link>
-            </p>
-          </form>
-        </Col>
-      </Row>
+          <p>
+            Vous n&apos;avez pas encore de compte ?{" "}
+            <Link href="register">S&apos;inscrire</Link>
+          </p>
+        </form>
+      </AuthLayout>
     </>
   );
 };
