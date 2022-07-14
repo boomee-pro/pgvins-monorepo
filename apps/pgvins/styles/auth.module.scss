@@ -29,11 +29,13 @@ $grey: hsl(0, 0%, 47%);
     form {
       width: 55%;
       text-align: center;
+      display: flex;
+      row-gap: 20px;
+      flex-direction: column;
       color: $grey;
 
       .input_group {
         position: relative;
-        margin-bottom: 25px;
 
         input {
           border-radius: 18px;
@@ -80,6 +82,11 @@ $grey: hsl(0, 0%, 47%);
       }
     }
 
+    .api_error {
+      display: block;
+      color: $red_light;
+    }
+
     button {
       background-color: $red;
       color: white;
@@ -88,18 +95,26 @@ $grey: hsl(0, 0%, 47%);
       text-transform: uppercase;
       line-height: 47px;
       border-radius: 18px;
-      margin: 30px 0 15px 0;
       letter-spacing: 1px;
+    }
+
+    .provider {
+      background-color: #e3e3e3;
+      color: $gold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     a {
       color: $gold;
     }
-  }
-}
 
-.split {
-  margin-bottom: 0 !important;
+    p {
+      margin: 0 auto;
+    }
+  }
 }
 
 @media screen and (max-width: 700px) {

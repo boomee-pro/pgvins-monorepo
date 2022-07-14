@@ -1,12 +1,16 @@
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
-import classNames from "classnames";
+import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { BiEnvelope, BiLockAlt } from "react-icons/bi";
+import classNames from "classnames";
 
 import styles from "@styles/auth.module.scss";
-import { AuthLayout, FieldProps } from "@components/AuthLayout";
+import { AuthLayout, FieldProps } from "@components/auth/AuthLayout";
+import { useAuth } from "@contexts/AuthContext";
+import withoutAuth from "hoc/withoutAuth";
+import OAuthProviders from "@components/auth/OAuthProviders";
+import toast from "react-hot-toast";
 
 export type LoginInput = {
   email: string;
@@ -16,10 +20,14 @@ export type LoginInput = {
 export type FieldTypes = FieldProps & { name: keyof LoginInput };
 
 const Login = () => {
+  const { login, user, fetchUser } = useAuth();
+  const [error, setError] = useState<string>();
+
   const {
+    watch,
     register: linkInput,
     handleSubmit,
-    formState: { errors },
+    formState: { errors: fieldErrors },
   } = useForm<LoginInput>();
 
   const fields: Array<FieldTypes> = [
@@ -39,8 +47,17 @@ const Login = () => {
     },
   ];
 
-  const onSubmit: SubmitHandler<LoginInput> = (data) => {
-    console.log(data);
+  useEffect(() => {
+    const subscription = watch(() => setError(undefined));
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  const onSubmit: SubmitHandler<LoginInput> = (credentials) => {
+    login(credentials)
+      .then(() => toast.success("Connexion réussie"))
+      .catch((err) => {
+        setError(err.response?.data?.message);
+      });
   };
 
   return (
@@ -59,7 +76,7 @@ const Login = () => {
               key={field.name}
               className={classNames(
                 styles.input_group,
-                errors[field.name] && styles.error
+                fieldErrors[field.name] && styles.error
               )}
             >
               {field.icon}
@@ -68,13 +85,16 @@ const Login = () => {
                 placeholder={field.placeholder}
                 {...linkInput(field.name, { required: field.requiredMessage })}
               />
-              <small>{errors[field.name]?.message}</small>
+              <small>{fieldErrors[field.name]?.message}</small>
             </div>
           ))}
+
+          {error && <small className={styles.api_error}>{error}</small>}
 
           <Link href="forgot-password">Mot de passe oublié ?</Link>
 
           <button type="submit">Se connecter</button>
+          <OAuthProviders />
 
           <p>
             Vous n&apos;avez pas encore de compte ?{" "}
@@ -86,4 +106,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withoutAuth(Login);

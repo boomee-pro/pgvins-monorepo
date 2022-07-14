@@ -40,7 +40,9 @@ export default class AuthController extends Controller {
       path: "/google",
       method: Methods.GET,
       handler: () => {},
-      localMiddleware: [passport.authenticate("google")],
+      localMiddleware: [
+        passport.authenticate("google", { scope: ["profile", "email"] }),
+      ],
     },
     {
       path: "/google/callback",
@@ -93,7 +95,7 @@ export default class AuthController extends Controller {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    super.sendSuccess(res, req.user ?? "");
+    super.sendSuccess(res, req.user ?? undefined);
   }
 
   async handleLogin(
@@ -117,7 +119,7 @@ export default class AuthController extends Controller {
   ): Promise<void> {
     if (req.user)
       req.logOut(() => {
-        super.sendSuccess(res, {});
+        super.sendSuccess(res);
       });
   }
 
@@ -139,6 +141,6 @@ export default class AuthController extends Controller {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    return res.redirect("http://localhost:3000");
+    return res.redirect("http://localhost:3000/redirect");
   }
 }

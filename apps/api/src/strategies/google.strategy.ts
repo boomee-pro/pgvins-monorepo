@@ -12,7 +12,6 @@ export class GoogleOAuthStrategy extends Strategy {
           clientID: process.env.GOOGLE_ID!,
           clientSecret: process.env.GOOGLE_SECRET!,
           callbackURL: "/auth/google/callback",
-          scope: ["profile", "email"],
         },
         async (_, __, profile: any, done) => {
           const email = profile.emails[0].value;

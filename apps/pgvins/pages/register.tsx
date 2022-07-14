@@ -1,6 +1,6 @@
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import classNames from "classnames";
 import {
   useForm,
@@ -12,9 +12,10 @@ import { Row, Col } from "react-grid-system";
 import { BiEnvelope, BiLockAlt, BiUser } from "react-icons/bi";
 
 import styles from "@styles/auth.module.scss";
-import { AuthLayout, FieldProps } from "@components/AuthLayout";
+import { AuthLayout, FieldProps } from "@components/auth/AuthLayout";
+import googleProvider from "@images/auth/google-provider.png";
 
-type RegisterInput = {
+export type RegisterInput = {
   email: string;
   password: string;
   verifyPassword: string;
@@ -34,7 +35,7 @@ const Register = () => {
     register: linkInput,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors: fieldErrors },
   } = useForm<RegisterInput>();
 
   const fields: Array<FieldType> = [
@@ -98,45 +99,52 @@ const Register = () => {
       </Head>
 
       <AuthLayout>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <h2>Inscription</h2>
+        <>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <h2>Inscription</h2>
 
-          <Row gutterWidth={12} justify="between">
             {fields.map((field) => (
-              <Col key={field.name} xs={12} md={field.size ?? 12}>
-                <div
-                  key={field.name}
-                  className={classNames(
-                    styles.input_group,
-                    errors[field.name] && styles.error
-                  )}
-                >
-                  {field.icon}
-                  <input
-                    type={field.type}
-                    placeholder={field.placeholder}
-                    {...linkInput(field.name, {
-                      required: field.requiredMessage,
-                      ...(field.passwordLength && {
-                        minLength: field.passwordLength,
-                      }),
-                      ...(field.passwordVerify && {
-                        validate: field.passwordVerify,
-                      }),
-                    })}
-                  />
-                  <small>{errors[field.name]?.message}</small>
-                </div>
-              </Col>
+              <div
+                key={field.name}
+                className={classNames(
+                  styles.input_group,
+                  fieldErrors[field.name] && styles.error
+                )}
+              >
+                {field.icon}
+                <input
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  {...linkInput(field.name, {
+                    required: field.requiredMessage,
+                    ...(field.passwordLength && {
+                      minLength: field.passwordLength,
+                    }),
+                    ...(field.passwordVerify && {
+                      validate: field.passwordVerify,
+                    }),
+                  })}
+                />
+                <small>{fieldErrors[field.name]?.message}</small>
+              </div>
             ))}
-          </Row>
+            <button type="submit">S&apos;inscrire</button>
+            <button type="button" className={styles.provider}>
+              <Image
+                src={googleProvider}
+                alt=""
+                layout="fixed"
+                height={20}
+                width={20}
+              />
+              S&apos;inscrire avec Google
+            </button>
 
-          <button type="submit">S&apos;inscrire</button>
-
-          <p>
-            Vous avez déjà un compte ? <Link href="login">Se connecter</Link>
-          </p>
-        </form>
+            <p>
+              Vous avez déjà un compte ? <Link href="login">Se connecter</Link>
+            </p>
+          </form>
+        </>
       </AuthLayout>
     </div>
   );

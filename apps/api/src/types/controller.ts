@@ -46,12 +46,12 @@ export default abstract class Controller {
 
   protected sendSuccess(
     res: Response,
-    data: object,
+    data?: object,
     message?: string
   ): Response {
     return res.status(200).json({
       message: message || "success",
-      data: data,
+      data: data ?? undefined,
     });
   }
 
