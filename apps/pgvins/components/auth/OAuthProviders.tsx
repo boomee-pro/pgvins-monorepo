@@ -13,7 +13,7 @@ const OAuthProviders = () => {
     const popup = window.open(
       `http://localhost:8080/auth/${provider}`,
       "_blank",
-      "height=500,width=500,top=0,left=0"
+      "width=500,height=500"
     );
     setExternalPopup(popup);
   };

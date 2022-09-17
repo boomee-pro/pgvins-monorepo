@@ -4,11 +4,7 @@ import { Row, Col, Hidden } from "react-grid-system";
 import bannerImg from "@images/auth/banner.png";
 import styles from "@styles/auth.module.scss";
 
-type Props = {
-  children?: JSX.Element;
-};
-
-export const AuthLayout = ({ children }: Props) => {
+export const AuthLayout = ({ children }: any) => {
   return (
     <Row className={styles.container}>
       <Hidden xs sm>

@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 type NavbarLink = {
   label: string;
   href: string;
+  space?: boolean;
 };
 
 const Navbar = () => {
@@ -21,9 +22,13 @@ const Navbar = () => {
 
   const navElements: Array<NavbarLink> = [
     { label: "Accueil", href: "/" },
-    { label: "Vins", href: "/wines" },
+    { label: "Nos Vins", href: "/wines" },
     { label: "Notre histoire", href: "/ourstory" },
-    { label: "", href: "" },
+    { label: "Spacer", href: "", space: true },
+    {
+      label: connected ? user.details.firstName : "Se connecter",
+      href: connected ? "/account" : "/login",
+    },
   ];
 
   useEffect(() => {
@@ -38,7 +43,7 @@ const Navbar = () => {
       <div className={styles.background} />
       <div className={styles.content}>
         <h3>
-          <Link href="/">SOMMELIER</Link>
+          <Link href="/">PG VINS</Link>
         </h3>
         <nav className={classNames(isOpen && styles.open_menu)}>
           {navElements.map(
@@ -51,18 +56,13 @@ const Navbar = () => {
                     router.pathname === nav.href && styles.activeLink
                   )}
                 >
-                  {nav.label}
+                  {nav.space ? " " : nav.label}
                 </Link>
               )
           )}
-          {connected ? (
-            <Link href="/profile">{user.details.firstName}</Link>
-          ) : (
-            <Link href="/login">Se connecter</Link>
-          )}
           <div className={styles.icons}>
             <BiSearch size={24} />
-            {user.isAuthenticated && (
+            {connected && (
               <BiDoorOpen
                 size={24}
                 onClick={() =>

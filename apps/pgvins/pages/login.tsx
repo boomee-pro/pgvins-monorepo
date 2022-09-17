@@ -4,23 +4,24 @@ import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { BiEnvelope, BiLockAlt } from "react-icons/bi";
 import classNames from "classnames";
+import toast from "react-hot-toast";
 
 import styles from "@styles/auth.module.scss";
 import { AuthLayout, FieldProps } from "@components/auth/AuthLayout";
 import { useAuth } from "@contexts/AuthContext";
 import withoutAuth from "hoc/withoutAuth";
 import OAuthProviders from "@components/auth/OAuthProviders";
-import toast from "react-hot-toast";
 
 export type LoginInput = {
   email: string;
   password: string;
 };
 
-export type FieldTypes = FieldProps & { name: keyof LoginInput };
+export type FieldType = FieldProps & { name: keyof LoginInput };
 
 const Login = () => {
-  const { login, user, fetchUser } = useAuth();
+  const { login } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>();
 
   const {
@@ -30,7 +31,7 @@ const Login = () => {
     formState: { errors: fieldErrors },
   } = useForm<LoginInput>();
 
-  const fields: Array<FieldTypes> = [
+  const fields: Array<FieldType> = [
     {
       name: "email",
       type: "text",
@@ -52,12 +53,14 @@ const Login = () => {
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  const onSubmit: SubmitHandler<LoginInput> = (credentials) => {
-    login(credentials)
+  const onSubmit: SubmitHandler<LoginInput> = async (credentials) => {
+    setLoading(true);
+    await login(credentials)
       .then(() => toast.success("Connexion réussie"))
       .catch((err) => {
         setError(err.response?.data?.message);
       });
+    setLoading(false);
   };
 
   return (
@@ -93,7 +96,9 @@ const Login = () => {
 
           <Link href="forgot-password">Mot de passe oublié ?</Link>
 
-          <button type="submit">Se connecter</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Chargement..." : "Se connecter"}
+          </button>
           <OAuthProviders />
 
           <p>

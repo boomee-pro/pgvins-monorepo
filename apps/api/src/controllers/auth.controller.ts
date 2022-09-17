@@ -41,7 +41,10 @@ export default class AuthController extends Controller {
       method: Methods.GET,
       handler: () => {},
       localMiddleware: [
-        passport.authenticate("google", { scope: ["profile", "email"] }),
+        passport.authenticate("google", {
+          session: true,
+          scope: ["profile", "email"],
+        }),
       ],
     },
     {
@@ -140,7 +143,8 @@ export default class AuthController extends Controller {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
+  ): Promise<any> {
+    if (!req.user) return res.send("Une erreur s'est produite");
     return res.redirect("http://localhost:3000/redirect");
   }
 }

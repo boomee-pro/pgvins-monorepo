@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 import classNames from "classnames";
 import {
   useForm,
@@ -8,12 +9,14 @@ import {
   ValidationRule,
   Validate,
 } from "react-hook-form";
-import { Row, Col } from "react-grid-system";
 import { BiEnvelope, BiLockAlt, BiUser } from "react-icons/bi";
+import toast from "react-hot-toast";
 
 import styles from "@styles/auth.module.scss";
 import { AuthLayout, FieldProps } from "@components/auth/AuthLayout";
 import googleProvider from "@images/auth/google-provider.png";
+import { useAuth } from "@contexts/AuthContext";
+import withoutAuth from "hoc/withoutAuth";
 
 export type RegisterInput = {
   email: string;
@@ -31,6 +34,9 @@ type FieldType = FieldProps & {
 };
 
 const Register = () => {
+  const { register } = useAuth();
+  const [error, setError] = useState<string>();
+
   const {
     register: linkInput,
     handleSubmit,
@@ -87,8 +93,15 @@ const Register = () => {
     },
   ];
 
-  const onSubmit: SubmitHandler<RegisterInput> = (data) => {
-    console.log(data);
+  useEffect(() => {
+    const subscription = watch(() => setError(undefined));
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  const onSubmit: SubmitHandler<RegisterInput> = (credentials) => {
+    register(credentials)
+      .then(() => toast.success("Inscription réussie"))
+      .catch((err) => setError(err.response?.data?.message));
   };
 
   return (
@@ -128,6 +141,9 @@ const Register = () => {
                 <small>{fieldErrors[field.name]?.message}</small>
               </div>
             ))}
+
+            {error && <small className={styles.api_error}>{error}</small>}
+
             <button type="submit">S&apos;inscrire</button>
             <button type="button" className={styles.provider}>
               <Image
@@ -150,4 +166,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default withoutAuth(Register);

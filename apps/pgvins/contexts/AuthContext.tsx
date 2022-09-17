@@ -16,6 +16,7 @@ type User = {
 type authContextReturningValues = {
   user: User;
   login: (credentials: LoginInput) => Promise<User | void>;
+  register: (credentials: RegisterInput) => Promise<User | void>;
   logout: () => Promise<void>;
   fetchUser: () => void;
   connected: boolean;
@@ -55,17 +56,12 @@ export const getUser = async (ctx: any) => {
     })
     .then((user) => {
       return user;
-    });
+    })
+    .catch(() => console.log("error"));
 };
 
 export function AuthProvider({ children, userData }: any) {
-  const [user, setUser] = useState(
-    userData ||
-      ({
-        isAuthenticated: false,
-        details: {},
-      } as User)
-  );
+  const [user, setUser] = useState(userData || ({} as User));
 
   const fetchUser = async () => {
     await userRequests.get("/user").then((user) => {
@@ -79,6 +75,12 @@ export function AuthProvider({ children, userData }: any) {
       .then((userData) => setUser(userData ?? ({} as User)));
   };
 
+  const register = (credentials: RegisterInput): Promise<void | User> => {
+    return userRequests
+      .post("/register", credentials)
+      .then((userData) => setUser(userData ?? ({} as User)));
+  };
+
   const logout = async () => {
     await userRequests.get("/logout").then((user) => setUser(user));
   };
@@ -87,6 +89,7 @@ export function AuthProvider({ children, userData }: any) {
     user,
     connected: user.isAuthenticated && user.details,
     login,
+    register,
     logout,
     fetchUser,
   };
