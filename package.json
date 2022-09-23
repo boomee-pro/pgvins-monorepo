@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "web": "yarn workspace web start",
-    "api": "yarn workspace api dev",
+    "api": "yarn workspace api prod",
     "wine": "yarn workspace pgvins dev",
     "dev": "concurrently --kill-others-on-fail \"yarn api\"  \"yarn web\""
   },
