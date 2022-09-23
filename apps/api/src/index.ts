@@ -22,7 +22,7 @@ import { config } from "dotenv";
 config();
 
 const app = express();
-const port = parseInt(process.env.EXPRESS_PORT!) || 8080;
+const port = parseInt(process.env.EXPRESS_PORT);
 const server = new Server(app, port, passport);
 const redis = new Redis();
 
@@ -34,12 +34,12 @@ const controllers: Array<Controller> = [
 const globalMiddleware: Array<RequestHandler> = [
   express.json(),
   express.urlencoded({ extended: false }),
-  cors({ credentials: true, origin: "http://localhost:3000" }),
+  cors({ credentials: true, origin: process.env.CORS_ORIGIN }),
   session({
     store: new (RedisStore(session))({
       client: redis,
     }),
-    secret: process.env.SECRET || "supersecret",
+    secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
     cookie: {

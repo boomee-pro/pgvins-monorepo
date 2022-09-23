@@ -9,8 +9,8 @@ export class GoogleOAuthStrategy extends Strategy {
       "google",
       new GoogleStrategy(
         {
-          clientID: process.env.GOOGLE_ID!,
-          clientSecret: process.env.GOOGLE_SECRET!,
+          clientID: process.env.GOOGLE_ID,
+          clientSecret: process.env.GOOGLE_SECRET,
           callbackURL: "http://localhost:8080/auth/google/callback",
           userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
         },

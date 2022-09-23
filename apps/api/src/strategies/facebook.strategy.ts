@@ -9,8 +9,8 @@ export class FacebookOAuthStrategy extends Strategy {
       "facebook",
       new FacebookStrategy(
         {
-          clientID: process.env.FACEBOOK_ID!,
-          clientSecret: process.env.FACEBOOK_SECRET!,
+          clientID: process.env.FACEBOOK_ID,
+          clientSecret: process.env.FACEBOOK_SECRET,
           callbackURL: "/auth/facebook/callback",
           profileFields: ["id", "emails", "name"],
         },

@@ -9,8 +9,8 @@ export class GithubOAuthStrategy extends Strategy {
       "github",
       new GitHubStrategy(
         {
-          clientID: process.env.GITHUB_ID!,
-          clientSecret: process.env.GITHUB_SECRET!,
+          clientID: process.env.GITHUB_ID,
+          clientSecret: process.env.GITHUB_SECRET,
           callbackURL: "/auth/github/callback",
           scope: ["user"],
         },
