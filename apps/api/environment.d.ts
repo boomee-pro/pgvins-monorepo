@@ -5,7 +5,8 @@ declare global {
     interface ProcessEnv {
       NODE_ENV: "development" | "production";
       EXPRESS_PORT: string;
-      CORS_ORIGIN: string;
+      CLIENT_URL: string;
+      DASHBOARD_URL: string;
       SECRET: string;
       GOOGLE_ID: string;
       GOOGLE_SECRET: string;

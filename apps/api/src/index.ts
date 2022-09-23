@@ -23,6 +23,7 @@ config();
 
 const app = express();
 const port = parseInt(process.env.EXPRESS_PORT);
+const cors_origins = [process.env.CLIENT_URL, process.env.DASHBOARD_URL];
 const server = new Server(app, port, passport);
 const redis = new Redis();
 
@@ -34,7 +35,7 @@ const controllers: Array<Controller> = [
 const globalMiddleware: Array<RequestHandler> = [
   express.json(),
   express.urlencoded({ extended: false }),
-  cors({ credentials: true, origin: process.env.CORS_ORIGIN }),
+  cors({ credentials: true, origin: cors_origins }),
   session({
     store: new (RedisStore(session))({
       client: redis,
