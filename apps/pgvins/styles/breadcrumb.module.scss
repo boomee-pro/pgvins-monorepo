@@ -1,0 +1,32 @@
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 50px 0;
+  list-style: none;
+  font-weight: 400;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  // margin: 20px;
+  li {
+    a {
+      color: currentColor;
+      text-decoration: none;
+    }
+    & + li {
+      padding-left: 1rem;
+    }
+
+    & + li::before {
+      display: inline-block;
+      padding-right: 0.5rem;
+      color: #6c757d;
+      content: "/";
+    }
+  }
+}
+
+.active {
+  color: var(--gold-main);
+}

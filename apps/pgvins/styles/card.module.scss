@@ -4,13 +4,12 @@ $blue: var(--blue-dark);
 $red: var(--red-main);
 
 .card {
-  margin: 0 auto;
   text-align: center;
   border: 3px solid $gold;
   border-radius: 20px;
   box-shadow: $shadow;
-  width: 100%;
-
+  max-width: 300px;
+  min-width: 280px;
   .pictures {
     position: relative;
     .wine {

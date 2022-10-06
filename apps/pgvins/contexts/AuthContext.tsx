@@ -57,7 +57,7 @@ export const getUser = async (ctx: any) => {
     .then((user) => {
       return user;
     })
-    .catch(() => console.log("error"));
+    .catch(() => {});
 };
 
 export function AuthProvider({ children, userData }: any) {

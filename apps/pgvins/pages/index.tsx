@@ -5,7 +5,7 @@ import { Row, Col, Container } from "react-grid-system";
 import styles from "@styles/home.module.scss";
 import { useAuth } from "@contexts/AuthContext";
 import bannerImg from "@images/layout/header.png";
-import Card from "@components/utils/Card";
+import Card from "@components/wines/Card";
 
 const Home = () => {
   const { user } = useAuth();
@@ -32,7 +32,8 @@ const Home = () => {
           />
         </div>
       </section>
-      <section
+
+      {/* <section
         style={{
           paddingTop: "50px",
           width: "80%",
@@ -50,6 +51,20 @@ const Home = () => {
             <Card />
           </Col>
         </Row>
+      </section> */}
+      <section style={{ paddingTop: "50px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "30px",
+            flexWrap: "wrap",
+          }}
+        >
+          <Card />
+          <Card />
+          <Card />
+        </div>
       </section>
     </>
   );
