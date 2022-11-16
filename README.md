@@ -5,7 +5,7 @@
 ## Français
 
 ### Description
-Mise à neuf du site web [PGVins](http://www.pgvins.be/), vers un site d'ecommerce contenant une newsletter et un panel administrateur.
+Mise à neuf du site web [PGVins](http://www.pgvins.be/), vers un site d'ecommerce complet et contenant une newsletter et un panel administrateur.
 
 ### Design
 Le système de design est disponible en cliquant sur la bannière plus haut.
